@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Know Your Area</title>
+    <title>Locality Information</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,71 +41,143 @@
             height: 20px;
             margin-left: 10px;
         }
+        .input-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
 
     <h2>Know Your Area</h2>
 
+    <!-- Input field to fetch ward details -->
+    <div class="input-container">
+        <input type="text" id="ward" placeholder="Enter Ward No">
+        <button onclick="fetchWardData()">Get Details</button>
+    </div>
+
     <table>
         <tr><th colspan="2">Administrative Details</th></tr>
-        <tr><td>Block No</td><td>34</td></tr>
-        <tr><td>Ward No</td><td>122</td></tr>
-        <tr><td>Ward Name</td><td>Vivekananda Nagar Colony</td></tr>
-        <tr><td>Circle No</td><td>24</td></tr>
-        <tr><td>Zone</td><td>Secunderabad Zone</td></tr>
-        <tr><td>Pincode</td><td>500037</td></tr>
-        <tr><td>Mandal</td><td>Kukatpally</td></tr>
-        <tr><td>District</td><td>Medchal-Malkajgiri</td></tr>
-        <tr><td>Assembly Constituency</td><td>Serilingampally</td></tr>
-        <tr><td>Parliamentary Constituency</td><td>Chevella Lok Sabha constituency</td></tr>
+        <tr><td>Ward No</td><td><span id="wardNo">N/A</span></td></tr>
+        <tr><td>Ward Name</td><td><span id="wardName">N/A</span></td></tr>
+        <tr><td>Circle No</td><td><span id="circleNo">N/A</span></td></tr>
+        <tr><td>Zone</td><td><span id="zone">N/A</span></td></tr>
+        <tr><td>Pincode</td><td><span id="pincode">N/A</span></td></tr>
+        <tr><td>Mandal</td><td><span id="mandal">N/A</span></td></tr>
+        <tr><td>District</td><td><span id="district">N/A</span></td></tr>
+        <tr><td>Assembly Constituency</td><td><span id="assembly">N/A</span></td></tr>
+        <tr><td>Parliamentary Constituency</td><td><span id="parliamentary">N/A</span></td></tr>
 
         <tr><th colspan="2">Public Representative's</th></tr>
+        <tr><td>Corporator Name</td><td><span id="corporator">N/A</span></td></tr>
         <tr>
-            <td>MLA - Sri Arekapudi Gandhi</td>
+            <td>Corporator Contact</td>
             <td class="whatsapp-link">
-                <a href="https://wa.me/9849998995" target="_blank">9849998995</a>
+                <a id="corporatorContact" href="#" target="_blank">N/A</a>
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
             </td>
         </tr>
-        <tr>
-            <td>Corporator - Sri Madhavaram Roja Devi</td>
-            <td class="whatsapp-link">
-                <a href="https://wa.me/9652234234" target="_blank">9652234234</a>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-            </td>
-        </tr>
-
-        <tr><th colspan="2">Emergency and Essential Services</th></tr>
-        <tr>
+<tr><th colspan="2">Emergency and Essential Services</th></tr>
+		<tr>
             <td>Police Station Jurisdiction</td>
-	<td><a href="https://www.cyberabadpolice.gov.in/know-your-police-station/jagathgirigutta-ps.html" target="_blank" style="color: red; font-weight: bold;">
+            <td><a href="https://www.cyberabadpolice.gov.in/know-your-police-station/jagathgirigutta-ps.html" target="_blank" style="color: red; font-weight: bold;">
         Jagadgirigutta Police Station</a></td>
-        </tr>
-       <tr><td>Police</td><td><a href="tel:100">100</a></td></tr>
-	<tr><td>Fire Services</td><td><a href="tel:101">101</a></td></tr>
-	<tr><td>Ambulance</td><td><a href="tel:108">108</a></td></tr>
-	<tr><td>Women Helpline</td><td><a href="tel:181">181</a></td></tr>
-	<tr><td>Child Helpline</td><td><a href="tel:1098">1098</a></td></tr>
-        <tr><td>Blood Bank</td><td><a href="tel:04024745243">040-24745243</a></td></tr>
-	<tr><td>GHMC - Complaint about Street Dogs</td><td><a href="tel:040-21111111">040-21111111</a></td></tr>
-	<tr><td>GHMC Citizen Grevance</td><td><a href="https://igs.ghmc.gov.in/operator/send_otp_mobile" target="_blank">Click here to raise a complaint to GHMC</a></td></tr>
+        <tr><td>Police</td><td><a href="tel:100">100</a></td></tr>
+        <tr><td>Fire Services</td><td><a href="tel:101">101</a></td></tr>
+        <tr><td>Ambulance</td><td><a href="tel:108">108</a></td></tr>
+        <tr><td>Women Helpline</td><td><a href="tel:181">181</a></td></tr>
+        <tr><td>Child Helpline</td><td><a href="tel:1098">1098</a></td></tr>
 
         <tr><th colspan="2">Water Supply & Sewerage Complaints (HMWS&SB)</th></tr>
         <tr><td>Customer Care Center</td><td><a href="tel:155313">155313</a></td></tr>
         <tr><td>EPABX Lines (Khairatabad)</td><td><a href="tel:04023433933">040-23433933 (30 lines)</a></td></tr>
         <tr><td>Fax (MD's Office, Khairatabad)</td><td><a href="tel:04023442855">040-23442855</a></td></tr>
         <tr><td>Fax (PRO Cell, Khairatabad)</td><td><a href="tel:04066664733">040-66664733</a></td></tr>
-            <tr>
+        <tr>
             <td>CAN NO</td>
             <td><a href="https://hyderabadwater.gov.in/en/index.php/services/customers-services/know-your-area-offices" target="_blank">Click here to know your area officer</a></td>
         </tr>
+
         <tr><th colspan="2">Electricity (Power Loss Complaints)</th></tr>
         <tr><td>Electricity Complaint</td><td><a href="tel:1912">1912</a></td></tr>
-        <tr><td>FOC Contact Number</td><td><a href="tel:8331041820">8331041820</a></td></tr>
+		<tr><td>FOC Contact Number</td><td><a href="tel:8331041820">8331041820</a></td></tr>
         <tr><td>Control Room Number</td><td><a href="tel:7382618971">7382618971</a></td></tr>
         <tr><td>Allwyn Colony Section Office</td><td><a href="tel:9491067618">9491067618</a></td></tr>
-    </table>
+       </table>
+
+    <script>
+        let csvData = [];
+
+        // Fetch CSV data and store it in a variable
+        fetch("https://raw.githubusercontent.com/gisintelugu/knowyourarea/main/knowyourarea.csv")
+            .then(response => response.text())
+            .then(text => {
+                let rows = text.split("\n").map(row => row.split(","));
+                let headers = rows[0];
+
+                csvData = rows.slice(1).map(row => {
+                    let obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header.trim()] = row[index]?.trim();
+                    });
+                    return obj;
+                });
+
+                console.log("CSV Data Loaded:", csvData);
+            })
+            .catch(error => console.error("Error loading CSV:", error));
+
+        function fetchWardData() {
+            let wardInput = document.getElementById("ward").value.trim();
+            if (!wardInput) {
+                alert("Please enter a Ward No.");
+                return;
+            }
+
+            let result = csvData.find(row => row["WardNo"] === wardInput);
+
+            if (result) {
+                document.getElementById("wardNo").innerText = result["WardNo"] || "N/A";
+                document.getElementById("wardName").innerText = result["WardName"] || "N/A";
+                document.getElementById("circleNo").innerText = result["CircleNo"] || "N/A";
+                document.getElementById("zone").innerText = result["Zone"] || "N/A";
+                document.getElementById("pincode").innerText = result["Pincode"] || "N/A";
+                document.getElementById("mandal").innerText = result["Mandal"] || "N/A";
+                document.getElementById("district").innerText = result["District"] || "N/A";
+                document.getElementById("assembly").innerText = result["AssemblyConstituency"] || "N/A";
+                document.getElementById("parliamentary").innerText = result["ParliamentaryConstituency"] || "N/A";
+                document.getElementById("corporator").innerText = result["NameoftheCorporator"] || "N/A";
+
+                // Handle Contact Number & WhatsApp Link
+                let contact = result["ContactNumber"] ? result["ContactNumber"].trim() : "";
+                let whatsappLink = document.getElementById("corporatorContact");
+
+                if (contact) {
+                    whatsappLink.innerText = contact;
+                    whatsappLink.href = `https://wa.me/${contact}`;
+                } else {
+                    whatsappLink.innerText = "N/A";
+                    whatsappLink.href = "#";
+                }
+            } else {
+                alert("No data found for this Ward No.");
+            }
+        }
+    </script>
 
 </body>
 </html>
