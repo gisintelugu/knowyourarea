@@ -77,13 +77,21 @@
         <tr><td>Circle No</td><td><span id="circleNo">N/A</span></td></tr>
         <tr><td>Zone</td><td><span id="zone">N/A</span></td></tr>
         <tr><td>Pincode</td><td><span id="pincode">N/A</span></td></tr>
-        <tr><td>Mandal</td><td><span id="mandal">N/A</span></td></tr>
-        <tr><td>District</td><td><span id="district">N/A</span></td></tr>
-        <tr><td>Assembly Constituency</td><td><span id="assembly">N/A</span></td></tr>
-        <tr><td>Parliamentary Constituency</td><td><span id="parliamentary">N/A</span></td></tr>
+        <tr><td>Mandal</td><td><span id="mandalName">N/A</span></td></tr>
+        <tr><td>District</td><td><span id="districtName">N/A</span></td></tr>
+        <tr><td>Assembly Constituency</td><td><span id="assemblyName">N/A</span></td></tr>
+        <tr><td>Parliamentary Constituency</td><td><span id="parliament">N/A</span></td></tr>
 
         <tr><th colspan="2">Public Representative's</th></tr>
-        <tr><td>Corporator Name</td><td><span id="corporator">N/A</span></td></tr>
+        		<tr><td>MLA Name</td><td><span id="NameoftheMLA">N/A</span></td></tr>
+		<tr><td>MLA Address</td><td><span id="AddressofCandidate">N/A</span></td></tr>
+		<tr>
+			<td>MLA Contact No</td>
+			<td class="whatsapp-link">
+				<a id="MLAContactNo" href="#" target="_blank">N/A</a>
+				<img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+				
+				<tr><td>Corporator Name</td><td><span id="NameoftheCorporator">N/A</span></td></tr>
         <tr>
             <td>Corporator Contact</td>
             <td class="whatsapp-link">
@@ -91,6 +99,11 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
             </td>
         </tr>
+    </td>
+</tr>
+
+
+		
 <tr><th colspan="2">Emergency and Essential Services</th></tr>
 		<tr>
             <td>Police Station Jurisdiction</td>
@@ -109,7 +122,8 @@
         <tr><td>Fax (PRO Cell, Khairatabad)</td><td><a href="tel:04066664733">040-66664733</a></td></tr>
         <tr>
             <td>CAN NO</td>
-            <td><a href="https://hyderabadwater.gov.in/en/index.php/services/customers-services/know-your-area-offices" target="_blank">Click here to know your area officer</a></td>
+            <td><a href="https://hyderabadwater.gov.in/en/index.php/services/customers-services/know-your-area-offices" target="_blank" style="color: red; font-weight: bold;">
+			Click here to know your area officer</a></td>
         </tr>
 
         <tr><th colspan="2">Electricity (Power Loss Complaints)</th></tr>
@@ -123,7 +137,7 @@
         let csvData = [];
 
         // Fetch CSV data and store it in a variable
-        fetch("https://raw.githubusercontent.com/gisintelugu/knowyourarea/main/knowyourarea.csv")
+        fetch("https://raw.githubusercontent.com/gisintelugu/knowyourarea/refs/heads/main/knowyourarea.csv")
             .then(response => response.text())
             .then(text => {
                 let rows = text.split("\n").map(row => row.split(","));
@@ -142,42 +156,78 @@
             .catch(error => console.error("Error loading CSV:", error));
 
         function fetchWardData() {
-            let wardInput = document.getElementById("ward").value.trim();
-            if (!wardInput) {
-                alert("Please enter a Ward No.");
-                return;
-            }
+    let wardInput = document.getElementById("ward").value.trim();
+    if (!wardInput) {
+        alert("Please enter a Ward No.");
+        return;
+    }
 
-            let result = csvData.find(row => row["WardNo"] === wardInput);
+    let result = csvData.find(row => row["WardNo"] === wardInput);
 
-            if (result) {
-                document.getElementById("wardNo").innerText = result["WardNo"] || "N/A";
-                document.getElementById("wardName").innerText = result["WardName"] || "N/A";
-                document.getElementById("circleNo").innerText = result["CircleNo"] || "N/A";
-                document.getElementById("zone").innerText = result["Zone"] || "N/A";
-                document.getElementById("pincode").innerText = result["Pincode"] || "N/A";
-                document.getElementById("mandal").innerText = result["Mandal"] || "N/A";
-                document.getElementById("district").innerText = result["District"] || "N/A";
-                document.getElementById("assembly").innerText = result["AssemblyConstituency"] || "N/A";
-                document.getElementById("parliamentary").innerText = result["ParliamentaryConstituency"] || "N/A";
-                document.getElementById("corporator").innerText = result["NameoftheCorporator"] || "N/A";
+    if (result) {
+        // Populate Administrative Details
+        document.getElementById("wardNo").innerText = result["WardNo"] || "N/A";
+        document.getElementById("wardName").innerText = result["WardName"] || "N/A";
+        document.getElementById("circleNo").innerText = result["CircleNo"] || "N/A";
+        document.getElementById("zone").innerText = result["Zone"] || "N/A";
+        document.getElementById("pincode").innerText = result["Pincode"] || "N/A";
+        document.getElementById("mandalName").innerText = result["MandalName"] || "N/A";
+        document.getElementById("districtName").innerText = result["DistrictName"] || "N/A";
+        document.getElementById("assemblyName").innerText = result["AssemblyName"] || "N/A";
+        document.getElementById("parliament").innerText = result["Parliament"] || "N/A";
 
-                // Handle Contact Number & WhatsApp Link
-                let contact = result["ContactNumber"] ? result["ContactNumber"].trim() : "";
-                let whatsappLink = document.getElementById("corporatorContact");
+        // Populate MLA Details
+        document.getElementById("NameoftheMLA").innerText = result["NameoftheMLA"] || "N/A";
+        document.getElementById("AddressofCandidate").innerText = result["AddressofCandidate"] || "N/A";
 
-                if (contact) {
-                    whatsappLink.innerText = contact;
-                    whatsappLink.href = `https://wa.me/${contact}`;
-                } else {
-                    whatsappLink.innerText = "N/A";
-                    whatsappLink.href = "#";
-                }
-            } else {
-                alert("No data found for this Ward No.");
-            }
+        // Populate Corporator Details
+        document.getElementById("NameoftheCorporator").innerText = result["NameoftheCorporator"] || "N/A";
+
+        let contact = result["ContactNumber"] ? result["ContactNumber"].trim() : "";
+        let whatsappLink = document.getElementById("corporatorContact");
+        if (contact) {
+            whatsappLink.innerText = contact;
+            whatsappLink.href = `https://wa.me/${contact}`;
+        } else {
+            whatsappLink.innerText = "N/A";
+            whatsappLink.href = "#";
         }
+
+        // Handle MLA Contact Number & WhatsApp Link
+        let mlaContact = result["MLAContactNo"] ? result["MLAContactNo"].trim() : "";
+        let mlaWhatsAppLink = document.getElementById("MLAContactNo");
+
+        if (mlaContact) {
+            mlaWhatsAppLink.innerText = mlaContact;
+            mlaWhatsAppLink.href = `https://wa.me/${mlaContact}`;
+        } else {
+            mlaWhatsAppLink.innerText = "N/A";
+            mlaWhatsAppLink.href = "#";
+        }
+    } else {
+        alert("No data found for this Ward No.");
+    }
+}
+
+
     </script>
 
 </body>
 </html>
+
+
+    <div class="disclaimer">
+    Disclaimer: The information regarding the Corporator's and MLA's is sourced from the GHMC website.
+</div>
+
+<style>
+    .disclaimer {
+        text-align: center;
+        font-size: 14px;
+        color: white;
+        background-color: #333;
+        padding: 10px;
+        margin-top: 20px;
+    }
+</style>
+
