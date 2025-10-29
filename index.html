@@ -4,234 +4,1090 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Know Your Area</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Your existing CSS remains exactly the same */
+        :root {
+            --primary: #2c7a5a;
+            --primary-dark: #1e5e44;
+            --secondary: #3498db;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
             background-color: #f4f4f4;
+            padding: 0;
+            margin: 0;
         }
-        h2 {
-            text-align: center;
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #fff;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #4CAF50;
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 30px;
         }
-        a {
-            text-decoration: none;
-            color: blue;
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
-        .whatsapp-link {
+        
+        .logo {
             display: flex;
             align-items: center;
+            gap: 15px;
         }
-        .whatsapp-link img {
-            width: 20px;
-            height: 20px;
-            margin-left: 10px;
+        
+        .logo i {
+            font-size: 2.5rem;
         }
-        .input-container {
+        
+        .logo-text h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .search-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
             text-align: center;
+        }
+        
+        .search-section h2 {
+            color: var(--primary);
             margin-bottom: 20px;
+            font-size: 1.5rem;
         }
-        input, button {
-            padding: 10px;
-            font-size: 16px;
+        
+        .search-container {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            gap: 10px;
         }
-        button {
-            background-color: #4CAF50;
+        
+        .search-container input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .search-container input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 122, 90, 0.2);
+        }
+        
+        .search-container button {
+            background-color: var(--primary);
             color: white;
             border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        button:hover {
-            background-color: #45a049;
+        
+        .search-container button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .results-container {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .results-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .results-header h2 {
+            font-size: 1.4rem;
+        }
+        
+        .ward-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--light-gray);
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .tab.active {
+            background: white;
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-card {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .info-card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-card p {
+            margin-bottom: 5px;
+        }
+        
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            color: var(--secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .contact-link:hover {
+            color: var(--primary);
+        }
+        
+        .emergency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .emergency-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--danger);
+            transition: transform 0.3s;
+        }
+        
+        .emergency-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .emergency-card i {
+            font-size: 2rem;
+            color: var(--danger);
+            margin-bottom: 10px;
+        }
+        
+        .emergency-card h3 {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .emergency-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--danger);
+            margin: 10px 0;
+        }
+        
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            min-width: 150px;
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .action-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn i {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .action-btn span {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .disclaimer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray);
+            background-color: var(--light-gray);
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            display: none;
+            background: #ffeaea;
+            color: var(--danger);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .suggestions {
+            display: none;
+            background: white;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .suggestion-item:hover {
+            background-color: var(--light);
+        }
+
+        .data-status {
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .data-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .data-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.8rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .info-grid, .emergency-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <div class="logo-text">
+                        <h1>Know Your Area</h1>
+                        <p>Access local information and services</p>
+                    </div>
+                </div>
+                <div class="quick-info">
+                    <p><i class="fas fa-info-circle"></i> Find your ward representatives and essential services</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section class="search-section">
+            <h2>Find Information for Your Ward</h2>
+            <div class="data-status" id="data-status">
+                <i class="fas fa-sync-alt fa-spin"></i> Loading ward data from GitHub...
+            </div>
+            <div class="search-container">
+                <input type="text" id="ward" placeholder="Enter Ward Number (e.g., 1, 2, 3...)" autocomplete="off" disabled>
+                <button onclick="fetchWardData()" id="search-btn" disabled>
+                    <i class="fas fa-search"></i> Get Details
+                </button>
+            </div>
+            <div class="suggestions" id="suggestions"></div>
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Fetching ward information...</p>
+            </div>
+            <div class="error-message" id="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="error-text">No data found for this Ward Number. Please try again.</span>
+            </div>
+        </section>
+        
+        <section class="results-container" id="results-container">
+            <div class="results-header">
+                <h2>Ward Information</h2>
+                <div class="ward-badge">Ward: <span id="wardNo">N/A</span></div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="administrative">Administrative</div>
+                <div class="tab" data-tab="representatives">Representatives</div>
+                <div class="tab" data-tab="emergency">Emergency Services</div>
+                <div class="tab" data-tab="utilities">Utilities</div>
+            </div>
+            
+            <div class="tab-content active" id="administrative">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-landmark"></i> Basic Information</h3>
+                        <p><strong>Ward Name:</strong> <span id="wardName">N/A</span></p>
+                        <p><strong>Circle No:</strong> <span id="circleNo">N/A</span></p>
+                        <p><strong>Zone:</strong> <span id="zone">N/A</span></p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-map-marker-alt"></i> Location Details</h3>
+                        <p><strong>Pincode:</strong> <span id="pincode">N/A</span></p>
+                        <p><strong>Mandal:</strong> <span id="mandalName">N/A</span></p>
+                        <p><strong>District:</strong> <span id="districtName">N/A</span></p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-vote-yea"></i> Political Constituencies</h3>
+                        <p><strong>Assembly Constituency:</strong> <span id="assemblyName">N/A</span></p>
+                        <p><strong>Parliamentary Constituency:</strong> <span id="parliament">N/A</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="representatives">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-user-tie"></i> MLA Details</h3>
+                        <p><strong>Name:</strong> <span id="NameoftheMLA">N/A</span></p>
+                        <p><strong>Address:</strong> <span id="AddressofCandidate">N/A</span></p>
+                        <a href="#" id="MLAContactNo" class="contact-link" target="_blank">
+                            <i class="fab fa-whatsapp"></i> <span id="MLAContactText">N/A</span>
+                        </a>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-user"></i> Corporator Details</h3>
+                        <p><strong>Name:</strong> <span id="NameoftheCorporator">N/A</span></p>
+                        <div id="corporatorContacts">
+                            <!-- Contact numbers will be dynamically added here -->
+                        </div>
+                    </div>
 
-    <h2>Know Your Area</h2>
-
-    <!-- Input field to fetch ward details -->
-    <div class="input-container">
-        <input type="text" id="ward" placeholder="Enter Ward No">
-        <button onclick="fetchWardData()">Get Details</button>
+                    <!-- Debug Information -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-bug"></i> Debug Information</h3>
+                        <p><strong>Available Fields:</strong></p>
+                        <div class="debug-info" id="debugFields"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="emergency">
+                <div class="emergency-grid">
+                    <div class="emergency-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Police Station</h3>
+                        <div class="emergency-number">
+                            <a href="tel:100">100</a>
+                        </div>
+                        <a href="https://www.cyberabadpolice.gov.in/know-your-police-station/know-your-ps.html#" target="_blank">Find Your Police Station</a>
+                    </div>
+                    
+                    <div class="emergency-card">
+                        <i class="fas fa-fire-extinguisher"></i>
+                        <h3>Fire Services</h3>
+                        <div class="emergency-number">
+                            <a href="tel:101">101</a>
+                        </div>
+                    </div>
+                    
+                    <div class="emergency-card">
+                        <i class="fas fa-ambulance"></i>
+                        <h3>Ambulance</h3>
+                        <div class="emergency-number">
+                            <a href="tel:102">102</a>, <a href="tel:108">108</a>
+                        </div>
+                    </div>
+                    
+                    <div class="emergency-card">
+                        <i class="fas fa-female"></i>
+                        <h3>Women Helpline</h3>
+                        <div class="emergency-number">
+                            <a href="tel:181">181</a>
+                        </div>
+                    </div>
+                    
+                    <div class="emergency-card">
+                        <i class="fas fa-child"></i>
+                        <h3>Child Helpline</h3>
+                        <div class="emergency-number">
+                            <a href="tel:1098">1098</a>
+                        </div>
+                    </div>
+                    
+                    <div class="emergency-card">
+                        <i class="fas fa-tint"></i>
+                        <h3>Blood Bank</h3>
+                        <div class="emergency-number">
+                            <a href="tel:040-24745243">040-24745243</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="utilities">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-tint"></i> Water Supply & Sewerage</h3>
+                        <p><strong>Customer Care:</strong> <a href="tel:155313">155313</a></p>
+                        <p><strong>EPABX Lines:</strong> <a href="tel:04023433933">040-23433933</a></p>
+                        <p><strong>Fax (MD's Office):</strong> <a href="tel:04023442855">040-23442855</a></p>
+                        <a href="https://hyderabadwater.gov.in/en/index.php/services/customers-services/know-your-area-offices" target="_blank" class="contact-link">
+                            <i class="fas fa-external-link-alt"></i> Know Your Area Officer
+                        </a>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-bolt"></i> Electricity Services</h3>
+                        <p><strong>Complaint:</strong> <a href="tel:1912">1912</a></p>
+                        <a href="https://tgsouthernpower.org/controlroom" target="_blank" class="contact-link">
+                            <i class="fas fa-external-link-alt"></i> Control Room Numbers
+                        </a>
+                        <a href="https://www.tgsouthernpower.org/fuseoffcallcenters" target="_blank" class="contact-link">
+                            <i class="fas fa-external-link-alt"></i> FOC Contact Numbers
+                        </a>
+                        <a href="https://tgsouthernpower.org/Contacts/teldir/td.html" target="_blank" class="contact-link">
+                            <i class="fas fa-external-link-alt"></i> Section Office Contacts
+                        </a>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-paw"></i> Animal Services</h3>
+                        <p><strong>GHMC Street Dog Complaint:</strong></p>
+                        <p><a href="tel:040-21111111">040-21111111</a>, <a href="tel:040-23225397">040-23225397</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="quick-actions">
+            <div class="action-btn" onclick="scrollToSection('emergency')">
+                <i class="fas fa-phone-alt"></i>
+                <span>Emergency Contacts</span>
+            </div>
+            <div class="action-btn" onclick="scrollToSection('utilities')">
+                <i class="fas fa-tools"></i>
+                <span>Utility Services</span>
+            </div>
+            <div class="action-btn" onclick="scrollToSection('representatives')">
+                <i class="fas fa-users"></i>
+                <span>Public Representatives</span>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong>Disclaimer:</strong> The information regarding the Corporator's and MLA's is sourced from the GHMC website.
+            For Electricity: The information is sourced from https://www.tgsouthernpower.org/
+            For Police Station Details: The information is sourced from https://www.cyberabadpolice.gov.in</p>
+        </div>
     </div>
-
-    <table>
-        <tr><th colspan="2">Administrative Details</th></tr>
-        <tr><td>Ward No</td><td><span id="wardNo">N/A</span></td></tr>
-        <tr><td>Ward Name</td><td><span id="wardName">N/A</span></td></tr>
-        <tr><td>Circle No</td><td><span id="circleNo">N/A</span></td></tr>
-        <tr><td>Zone</td><td><span id="zone">N/A</span></td></tr>
-        <tr><td>Pincode</td><td><span id="pincode">N/A</span></td></tr>
-        <tr><td>Mandal</td><td><span id="mandalName">N/A</span></td></tr>
-        <tr><td>District</td><td><span id="districtName">N/A</span></td></tr>
-        <tr><td>Assembly Constituency</td><td><span id="assemblyName">N/A</span></td></tr>
-        <tr><td>Parliamentary Constituency</td><td><span id="parliament">N/A</span></td></tr>
-
-        <tr><th colspan="2">Public Representative's</th></tr>
-        		<tr><td>MLA Name</td><td><span id="NameoftheMLA">N/A</span></td></tr>
-		<tr><td>MLA Address</td><td><span id="AddressofCandidate">N/A</span></td></tr>
-		<tr>
-			<td>MLA Contact No</td>
-			<td class="whatsapp-link">
-				<a id="MLAContactNo" href="#" target="_blank">N/A</a>
-				<img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-				
-				<tr><td>Corporator Name</td><td><span id="NameoftheCorporator">N/A</span></td></tr>
-        <tr>
-            <td>Corporator Contact No</td>
-            <td class="whatsapp-link">
-                <a id="corporatorContact" href="#" target="_blank">N/A</a>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-            </td>
-        </tr>
-    </td>
-</tr>
-
-
-		
-<tr><th colspan="2">Emergency and Essential Services</th></tr>
-		<tr>
-            <td>Police Station Jurisdiction</td>
-            <td><a href="https://www.cyberabadpolice.gov.in/know-your-police-station/know-your-ps.html#" target="_blank" style="color: red; font-weight: bold;">
-        Know Your Police Station</a></td>
-        <tr><td>Police</td><td><a href="tel:100">100</a></td></tr>
-        <tr><td>Fire Services</td><td><a href="tel:101">101</a></td></tr>
-        <tr><td>Ambulance</td><td><a href="tel:101">102</a>, <a href="tel:108">108</a></td></tr>
-        <tr><td>Women Helpline</td><td><a href="tel:181">181</a></td></tr>
-        <tr><td>Child Helpline</td><td><a href="tel:1098">1098</a></td></tr>
-	<tr><td>Blood Bank</td><td><a href="tel:040-24745243">040-24745243</a></td></tr>
-	 <tr><td>GHMC Street Dog Complaint</td><td><a href="tel:040-21111111">040-21111111</a>, <a href="tel:040-23225397">040-23225397</a></td></tr>
-
-        <tr><th colspan="2">Water Supply & Sewerage Complaints (HMWS&SB)</th></tr>
-        <tr><td>Customer Care Center</td><td><a href="tel:155313">155313</a></td></tr>
-        <tr><td>EPABX Lines (Khairatabad)</td><td><a href="tel:04023433933">040-23433933 (30 lines)</a></td></tr>
-        <tr><td>Fax (MD's Office, Khairatabad)</td><td><a href="tel:04023442855">040-23442855</a></td></tr>
-        <tr><td>Fax (PRO Cell, Khairatabad)</td><td><a href="tel:04066664733">040-66664733</a></td></tr>
-        <tr><td>CAN NO</td><td><a href="https://hyderabadwater.gov.in/en/index.php/services/customers-services/know-your-area-offices" target="_blank" style="color: red; font-weight: bold;">
-			Know Your Area Officer</a></td></tr>
-
-        <tr><th colspan="2">Electricity</th></tr>
-        <tr><td>Electricity Complaint</td><td><a href="tel:1912">1912</a></td></tr>
-	<tr><td>Control Room Number</td><td><a href="https://tgsouthernpower.org/controlroom" target="_blank" style="color: red; font-weight: bold;">
-			Control Room Number</a></td></tr>
-	<tr><td>FOC Contact Number (Fuse off call centers)</td><td><a href="https://www.tgsouthernpower.org/fuseoffcallcenters" target="_blank" style="color: red; font-weight: bold;">
-			FOC Contact Number</a></td></tr>
-        <tr><td>Section Office</td><td><a href="https://tgsouthernpower.org/Contacts/teldir/td.html" target="_blank" style="color: red; font-weight: bold;">
-			Search Here for Section Office Contact Number</a></td></tr>
-       </table>
 
     <script>
         let csvData = [];
+        let dataLoaded = false;
 
-        // Fetch CSV data and store it in a variable
-        fetch("https://raw.githubusercontent.com/gisintelugu/knowyourarea/refs/heads/main/knowyourarea.csv")
-            .then(response => response.text())
-            .then(text => {
-                let rows = text.split("\n").map(row => row.split(","));
-                let headers = rows[0];
+        // GitHub Raw CSV URL - No CORS issues!
+        const GITHUB_CSV_URL = "https://raw.githubusercontent.com/gisintelugu/knowyourarea/refs/heads/main/knowyourarea.csv";
 
-                csvData = rows.slice(1).map(row => {
+        // Load data from GitHub
+        function loadData() {
+            console.log("Loading data from GitHub:", GITHUB_CSV_URL);
+            
+            // Show loading state
+            document.getElementById('data-status').innerHTML = 
+                '<i class="fas fa-sync-alt fa-spin"></i> Loading ward data from GitHub...';
+            
+            fetch(GITHUB_CSV_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    console.log("Raw data received from GitHub");
+                    console.log("First 500 characters:", text.substring(0, 500));
+                    
+                    processCSVData(text);
+                })
+                .catch(error => {
+                    console.error("Error loading data from GitHub:", error);
+                    document.getElementById('data-status').innerHTML = 
+                        '<i class="fas fa-exclamation-triangle"></i> Error loading data from GitHub: ' + error.message;
+                    document.getElementById('data-status').className = 'data-status error';
+                });
+        }
+
+        function processCSVData(text) {
+            console.log("Processing CSV data...");
+            
+            // Parse CSV data
+            const rows = parseCSV(text);
+            console.log("Parsed rows:", rows.length);
+            
+            if (rows.length < 2) {
+                throw new Error('No data rows found in CSV');
+            }
+            
+            const headers = rows[0].map(header => header.trim());
+            console.log("CSV Headers:", headers);
+            
+            // Create data objects
+            csvData = rows.slice(1)
+                .filter(row => row.length > 0 && row[0].trim() !== '') // Remove empty rows
+                .map(row => {
                     let obj = {};
                     headers.forEach((header, index) => {
-                        obj[header.trim()] = row[index]?.trim();
+                        obj[header] = row[index] ? row[index].trim() : '';
                     });
                     return obj;
                 });
 
-                console.log("CSV Data Loaded:", csvData);
-            })
-            .catch(error => console.error("Error loading CSV:", error));
+            console.log("Successfully loaded data from GitHub:", csvData.length, "records");
+            
+            if (csvData.length > 0) {
+                console.log("First record:", csvData[0]);
+                console.log("Available ward numbers:", csvData.map(row => row["WardNo"] || row["Ward No"] || row["Ward"] || "N/A"));
+            }
+            
+            // Enable search and show success
+            dataLoaded = true;
+            document.getElementById('data-status').innerHTML = 
+                '<i class="fas fa-check-circle"></i> Data loaded successfully from GitHub! ' + 
+                csvData.length + ' wards available. Try searching for ward numbers.';
+            document.getElementById('data-status').className = 'data-status success';
+            
+            document.getElementById('ward').disabled = false;
+            document.getElementById('search-btn').disabled = false;
+            
+            // Show sample ward numbers for user guidance
+            const sampleWards = getSampleWardNumbers();
+            if (sampleWards) {
+                document.getElementById('ward').placeholder = "Enter Ward Number (e.g., " + sampleWards + ")";
+            }
+        }
+
+        function getSampleWardNumbers() {
+            if (csvData.length === 0) return null;
+            const sampleWards = csvData.slice(0, 3).map(row => 
+                row["WardNo"] || row["Ward No"] || row["Ward"] || "N/A"
+            ).filter(ward => ward !== "N/A");
+            return sampleWards.length > 0 ? sampleWards.join(", ") : null;
+        }
+
+        // Improved CSV parser
+        function parseCSV(text) {
+            const rows = [];
+            const lines = text.split('\n');
+            
+            for (let line of lines) {
+                // Skip empty lines
+                if (!line.trim()) continue;
+                
+                // Handle quoted fields and commas within quotes
+                const row = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        row.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                
+                // Add the last field
+                row.push(current.trim());
+                rows.push(row);
+            }
+            
+            return rows;
+        }
 
         function fetchWardData() {
-    let wardInput = document.getElementById("ward").value.trim();
-    if (!wardInput) {
-        alert("Please enter a Ward No.");
-        return;
-    }
+            if (!dataLoaded) {
+                showError("Data is still loading. Please wait a moment.");
+                return;
+            }
 
-    let result = csvData.find(row => row["WardNo"] === wardInput);
+            let wardInput = document.getElementById("ward").value.trim();
+            if (!wardInput) {
+                showError("Please enter a Ward Number.");
+                return;
+            }
 
-    if (result) {
-        // Populate Administrative Details
-        document.getElementById("wardNo").innerText = result["WardNo"] || "N/A";
-        document.getElementById("wardName").innerText = result["WardName"] || "N/A";
-        document.getElementById("circleNo").innerText = result["CircleNo"] || "N/A";
-        document.getElementById("zone").innerText = result["Zone"] || "N/A";
-        document.getElementById("pincode").innerText = result["pincode"] || "N/A";
-        document.getElementById("mandalName").innerText = result["MandalName"] || "N/A";
-        document.getElementById("districtName").innerText = result["DistrictName"] || "N/A";
-        document.getElementById("assemblyName").innerText = result["AssemblyName"] || "N/A";
-        document.getElementById("parliament").innerText = result["Parliament"] || "N/A";
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('suggestions').style.display = 'none';
+            
+            // Find matching ward - try different column names
+            let result = csvData.find(row => {
+                // Try all possible column names for ward number
+                const possibleWardNumbers = [
+                    row["WardNo"],
+                    row["Ward No"], 
+                    row["Ward"],
+                    row["Ward Number"],
+                    row["WardNumber"]
+                ];
+                
+                const input = wardInput.toLowerCase();
+                
+                for (let wardNo of possibleWardNumbers) {
+                    if (wardNo && wardNo.toString().toLowerCase() === input) {
+                        return true;
+                    }
+                }
+                return false;
+            });
 
-        // Populate MLA Details
-        document.getElementById("NameoftheMLA").innerText = result["NameoftheMLA"] || "N/A";
-        document.getElementById("AddressofCandidate").innerText = result["AddressofCandidate"] || "N/A";
-
-        // Populate Corporator Details
-        document.getElementById("NameoftheCorporator").innerText = result["NameoftheCorporator"] || "N/A";
-
-        let contact = result["ContactNumber"] ? result["ContactNumber"].trim() : "";
-        let whatsappLink = document.getElementById("corporatorContact");
-        if (contact) {
-            whatsappLink.innerText = contact;
-            whatsappLink.href = `https://wa.me/${contact}`;
-        } else {
-            whatsappLink.innerText = "N/A";
-            whatsappLink.href = "#";
+            if (result) {
+                console.log("Found ward data:", result);
+                populateWardData(result);
+            } else {
+                // If exact match not found, show available wards
+                const availableWards = csvData.map(row => 
+                    row["WardNo"] || row["Ward No"] || row["Ward"] || "N/A"
+                ).filter(ward => ward !== "N/A");
+                
+                showError("No data found for Ward: '" + wardInput + "'. Available wards: " + availableWards.join(", "));
+                document.getElementById('loading').style.display = 'none';
+            }
         }
 
-        // Handle MLA Contact Number & WhatsApp Link
-        let mlaContact = result["MLAContactNo"] ? result["MLAContactNo"].trim() : "";
-        let mlaWhatsAppLink = document.getElementById("MLAContactNo");
+        function populateWardData(result) {
+            console.log("Populating data for ward:", result);
+            
+            // Show debug information
+            showDebugInfo(result);
+            
+            // Helper function to get value from multiple possible column names
+            function getValue(possibleKeys) {
+                for (let key of possibleKeys) {
+                    if (result[key] && result[key].trim() !== "") {
+                        return result[key];
+                    }
+                }
+                return "N/A";
+            }
 
-        if (mlaContact) {
-            mlaWhatsAppLink.innerText = mlaContact;
-            mlaWhatsAppLink.href = `https://wa.me/${mlaContact}`;
-        } else {
-            mlaWhatsAppLink.innerText = "N/A";
-            mlaWhatsAppLink.href = "#";
+            // Administrative Details
+            document.getElementById("wardNo").innerText = getValue(["WardNo", "Ward No", "Ward", "Ward Number"]);
+            document.getElementById("wardName").innerText = getValue(["WardName", "Ward Name"]);
+            document.getElementById("circleNo").innerText = getValue(["CircleNo", "Circle No", "Circle"]);
+            document.getElementById("zone").innerText = getValue(["Zone"]);
+            document.getElementById("pincode").innerText = getValue(["pincode", "Pincode"]);
+            document.getElementById("mandalName").innerText = getValue(["MandalName", "Mandal"]);
+            document.getElementById("districtName").innerText = getValue(["DistrictName", "District"]);
+            document.getElementById("assemblyName").innerText = getValue(["AssemblyName", "Assembly"]);
+            document.getElementById("parliament").innerText = getValue(["Parliament", "Parliamentary"]);
+
+            // MLA Details
+            document.getElementById("NameoftheMLA").innerText = getValue(["NameoftheMLA", "MLA Name", "MLA"]);
+            document.getElementById("AddressofCandidate").innerText = getValue(["AddressofCandidate", "MLA Address", "Address"]);
+
+            // Corporator Details
+            document.getElementById("NameoftheCorporator").innerText = getValue(["NameoftheCorporator", "Corporator Name", "Corporator"]);
+
+            // Contact Numbers - FIXED: Only show MLA contact in MLA section
+            setupContactNumber(
+                getValue(["MLAContactNo", "MLA Contact"]),
+                "MLAContactNo",
+                "MLAContactText"
+            );
+            
+            // Corporator Contacts - FIXED: Only look for CORPORATOR-specific contact fields
+            setupCorporatorContacts(result);
+            
+            // Show results
+            document.getElementById('results-container').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            
+            // Scroll to results
+            document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
         }
-    } else {
-        alert("No data found for this Ward No.");
-    }
-}
 
+        function showDebugInfo(result) {
+            const debugFields = document.getElementById('debugFields');
+            let debugHTML = '';
+            
+            // Show all fields and their values
+            for (const [key, value] of Object.entries(result)) {
+                debugHTML += `<div><strong>${key}:</strong> "${value}"</div>`;
+            }
+            
+            debugFields.innerHTML = debugHTML;
+        }
 
+        function setupCorporatorContacts(result) {
+            const contactsContainer = document.getElementById('corporatorContacts');
+            contactsContainer.innerHTML = '';
+            
+            console.log("All available fields in result:", Object.keys(result));
+            
+            // Look specifically for CORPORATOR contact fields
+            const corporatorContactFields = Object.keys(result).filter(key => 
+                key.toLowerCase().includes('corporator') && 
+                (key.toLowerCase().includes('contact') || key.toLowerCase().includes('number') || key.toLowerCase().includes('phone'))
+            );
+            
+            console.log("Corporator contact fields:", corporatorContactFields);
+            
+            // Also check for generic contact fields that might be for corporator
+            const genericContactFields = ['Contact Number1', 'Contact Number2', 'ContactNumber', 'Contact'];
+            
+            let contactCount = 0;
+            
+            // First try corporator-specific fields
+            for (const field of corporatorContactFields) {
+                if (result[field] && result[field].trim() !== "" && result[field] !== "N/A") {
+                    createContactLink(result[field], contactsContainer, `Corporator (${field})`);
+                    contactCount++;
+                    console.log(`Found corporator contact in ${field}:`, result[field]);
+                }
+            }
+            
+            // If no corporator-specific fields found, try generic contact fields
+            // BUT exclude MLA contact fields
+            if (contactCount === 0) {
+                for (const field of genericContactFields) {
+                    // Skip MLA contact fields
+                    if (field.toLowerCase().includes('mla')) continue;
+                    
+                    if (result[field] && result[field].trim() !== "" && result[field] !== "N/A") {
+                        createContactLink(result[field], contactsContainer, `Corporator (${field})`);
+                        contactCount++;
+                        console.log(`Found contact in ${field}:`, result[field]);
+                    }
+                }
+            }
+            
+            // If still no contacts found, show N/A
+            if (contactCount === 0) {
+                const noContact = document.createElement('div');
+                noContact.className = 'contact-link';
+                noContact.innerHTML = `<i class="fab fa-whatsapp"></i> <span>N/A</span>`;
+                contactsContainer.appendChild(noContact);
+                console.log("No corporator contact numbers found in any field");
+            }
+        }
+
+        function createContactLink(contact, container, fieldName = '') {
+            const contactLink = document.createElement('a');
+            contactLink.href = `https://wa.me/${formatContactNumber(contact)}`;
+            contactLink.className = 'contact-link';
+            contactLink.target = '_blank';
+            contactLink.innerHTML = `<i class="fab fa-whatsapp"></i> <span>${contact}</span>`;
+            if (fieldName) {
+                console.log(`Creating contact link from ${fieldName}: ${contact}`);
+            }
+            container.appendChild(contactLink);
+        }
+
+        function formatContactNumber(contact) {
+            if (!contact) return '';
+            
+            // Clean the contact number
+            let cleanContact = contact.toString().replace(/\D/g, '');
+            
+            // Ensure it's in international format for WhatsApp
+            if (cleanContact.startsWith('91') && cleanContact.length === 12) {
+                // Already in correct format
+            } else if (cleanContact.length === 10) {
+                cleanContact = '91' + cleanContact;
+            }
+            
+            return cleanContact;
+        }
+
+        function setupContactNumber(contact, linkId, textId) {
+            const link = document.getElementById(linkId);
+            const text = document.getElementById(textId);
+            
+            console.log(`Setting up contact: ${contact} for ${linkId}`);
+            
+            if (contact && contact !== "N/A" && contact.trim() !== "") {
+                text.innerText = contact;
+                link.href = `https://wa.me/${formatContactNumber(contact)}`;
+                console.log(`WhatsApp link created: https://wa.me/${formatContactNumber(contact)}`);
+            } else {
+                text.innerText = "N/A";
+                link.href = "#";
+                link.onclick = function(e) { e.preventDefault(); };
+            }
+        }
+
+        // Show search suggestions
+        function showSuggestions() {
+            if (!dataLoaded) return;
+            
+            const input = document.getElementById('ward').value.toLowerCase();
+            if (input.length < 1) {
+                document.getElementById('suggestions').style.display = 'none';
+                return;
+            }
+            
+            const suggestions = csvData.filter(row => {
+                const wardNo = (row["WardNo"] || row["Ward No"] || row["Ward"] || "").toString().toLowerCase();
+                return wardNo.includes(input);
+            }).slice(0, 5);
+
+            const suggestionsContainer = document.getElementById('suggestions');
+            suggestionsContainer.innerHTML = '';
+            
+            if (suggestions.length > 0) {
+                suggestions.forEach(row => {
+                    const wardNo = row["WardNo"] || row["Ward No"] || row["Ward"] || "N/A";
+                    
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = `Ward ${wardNo}`;
+                    div.onclick = function() {
+                        document.getElementById('ward').value = wardNo;
+                        suggestionsContainer.style.display = 'none';
+                        fetchWardData();
+                    };
+                    suggestionsContainer.appendChild(div);
+                });
+                suggestionsContainer.style.display = 'block';
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('error-text').innerText = message;
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('results-container').style.display = 'none';
+        }
+
+        function scrollToSection(sectionId) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.tab[data-tab="${sectionId}"]`).classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Event listeners
+        document.getElementById('ward').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                fetchWardData();
+            }
+        });
+
+        document.getElementById('ward').addEventListener('input', showSuggestions);
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+        });
     </script>
-
 </body>
 </html>
-
-
-    <div class="disclaimer">
-    Disclaimer: The information regarding the Corporator's and MLA's is sourced from the GHMC website.
-	For Electricity : The information is sourced from https://www.tgsouthernpower.org/
-	For Police Station Details: The information is sourced from https://www.cyberabadpolice.gov.in
-</div>
-
-<style>
-    .disclaimer {
-        text-align: center;
-        font-size: 14px;
-        color: white;
-        background-color: #333;
-        padding: 10px;
-        margin-top: 20px;
-    }
-</style>
-
