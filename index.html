@@ -157,6 +157,20 @@
         .search-container button.reset:hover {
             background-color: var(--dark);
         }
+
+        .search-container:has(input:disabled) {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .search-container:has(input:disabled)::after {
+            content: "Loading data...";
+            display: block;
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
         
         .results-container {
             display: none;
@@ -452,6 +466,42 @@
             font-size: 0.8rem;
             max-height: 200px;
             overflow-y: auto;
+        }
+
+        /* Report Error Button */
+        .report-error-btn {
+            background: var(--warning);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 10px 0;
+            transition: all 0.3s;
+        }
+
+        .report-error-btn:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        /* Public Interest Banner */
+        .public-interest-banner {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .public-interest-banner i {
+            color: var(--secondary);
+            margin-right: 10px;
         }
 
         /* Analytics Dashboard Styles - SMALLER SIZE */
@@ -774,6 +824,47 @@
         </div>
     </div>
 
+    <!-- Report Error Modal -->
+    <div class="modal" id="reportErrorModal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Report Incorrect Information</h3>
+            <div class="terms-content">
+                <p>Please help us maintain accurate information by reporting any errors you find:</p>
+                
+                <div style="margin: 15px 0;">
+                    <label><strong>Ward Number:</strong></label>
+                    <input type="text" id="reportWardNo" class="search-container input" style="width: 100%; padding: 8px; margin: 5px 0;" readonly>
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <label><strong>What information is incorrect?</strong></label>
+                    <select id="errorType" style="width: 100%; padding: 8px; margin: 5px 0;">
+                        <option value="">Select the type of error</option>
+                        <option value="contact">Contact Number</option>
+                        <option value="name">Name of Representative</option>
+                        <option value="address">Address</option>
+                        <option value="ward">Ward Information</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <label><strong>Correct Information:</strong></label>
+                    <textarea id="correctInfo" style="width: 100%; padding: 8px; margin: 5px 0; height: 80px;" placeholder="Please provide the correct information..."></textarea>
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <label><strong>Your Email (optional):</strong></label>
+                    <input type="email" id="reporterEmail" style="width: 100%; padding: 8px; margin: 5px 0;" placeholder="Enter your email for updates">
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn primary" onclick="submitErrorReport()">Submit Report</button>
+                <button class="modal-btn secondary" onclick="closeErrorReport()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="container">
             <div class="header-content">
@@ -796,6 +887,12 @@
     </header>
     
     <div class="container">
+        <!-- Public Interest Banner -->
+        <div class="public-interest-banner">
+            <i class="fas fa-handshake"></i>
+            <strong>Public Service Initiative:</strong> This service is provided in public interest to help citizens access local government information easily.
+        </div>
+
         <section class="search-section">
             <h2>Find Information for Your Ward</h2>
             <div class="data-status" id="data-status">
@@ -835,6 +932,10 @@
             </div>
             
             <div class="tab-content active" id="administrative">
+                <button class="report-error-btn" onclick="openErrorReport()">
+                    <i class="fas fa-exclamation-circle"></i> Report Incorrect Information
+                </button>
+                
                 <div class="info-grid">
                     <div class="info-card">
                         <h3><i class="fas fa-landmark"></i> Basic Information</h3>
@@ -859,6 +960,10 @@
             </div>
             
             <div class="tab-content" id="representatives">
+                <button class="report-error-btn" onclick="openErrorReport()">
+                    <i class="fas fa-exclamation-circle"></i> Report Incorrect Information
+                </button>
+
                 <div class="security-warning">
                     <i class="fas fa-shield-alt"></i>
                     <strong>Security Notice:</strong> Contact information is provided for official purposes only. 
@@ -952,6 +1057,10 @@
             </div>
             
             <div class="tab-content" id="utilities">
+                <button class="report-error-btn" onclick="openErrorReport()">
+                    <i class="fas fa-exclamation-circle"></i> Report Incorrect Information
+                </button>
+
                 <div class="info-grid">
                     <div class="info-card">
                         <h3><i class="fas fa-tint"></i> Water Supply & Sewerage</h3>
@@ -1043,9 +1152,12 @@
         </div>
         
         <div class="disclaimer">
-            <p><strong>Disclaimer:</strong> The information regarding the Corporator's and MLA's is sourced from the GHMC website.
-            For Electricity: The information is sourced from https://www.tgsouthernpower.org/
-            For Police Station Details: The information is sourced from https://www.cyberabadpolice.gov.in</p>
+            <p><strong>Non-Affiliation Disclaimer:</strong> This is an independent citizen initiative and is not affiliated with GHMC or any government department. All information provided on this website is sourced from official government websites including GHMC, HMWS&SB, TSSPDCL, and Cyberabad Police.</p>
+            
+            <p style="margin-top: 10px;"><strong>Public Interest Statement:</strong> This service is provided in public interest to help citizens access local government information easily. Contact information is published from official sources for civic engagement purposes.</p>
+            
+            <p style="margin-top: 10px;"><strong>Content Removal:</strong> We will promptly remove any information if officially requested by competent authorities or if found to be inaccurate.</p>
+            
             <p style="margin-top: 10px; color: var(--danger);">
                 <strong>Security Notice:</strong> Contact information is provided for official civic purposes only. 
                 Misuse for harassment, spam, or illegal activities is prohibited and may lead to legal action under Indian IT Act, 2000.
@@ -1080,7 +1192,8 @@
             total: 0,
             contactClicks: 0,
             ipAddresses: [],
-            securityEvents: []
+            securityEvents: [],
+            errorReports: []
         };
 
         // Load analytics from localStorage
@@ -1313,11 +1426,24 @@
             console.log('Search reset successfully');
         }
 
-        // Load data from GitHub
-        function loadData() {
-            console.log("Loading data from GitHub:", GITHUB_CSV_URL);
+        // Load data from GitHub with caching
+        function loadDataWithCache() {
+            const CACHE_KEY = 'knowYourAreaData';
+            const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
             
-            // Show loading state
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) {
+                const { data, timestamp } = JSON.parse(cached);
+                if (Date.now() - timestamp < CACHE_DURATION) {
+                    console.log("Using cached data");
+                    processCSVData(data);
+                    return;
+                }
+            }
+            
+            // Load fresh data
+            console.log("Loading fresh data from GitHub:", GITHUB_CSV_URL);
+            
             document.getElementById('data-status').innerHTML = 
                 '<i class="fas fa-sync-alt fa-spin"></i> Loading ward data from GitHub...';
             
@@ -1329,16 +1455,33 @@
                     return response.text();
                 })
                 .then(text => {
-                    console.log("Raw data received from GitHub");
-                    console.log("First 500 characters:", text.substring(0, 500));
+                    console.log("Raw data received from GitHub, length:", text.length);
+                    
+                    if (!text || text.trim().length === 0) {
+                        throw new Error('Empty response from GitHub');
+                    }
+                    
+                    // Cache the data
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({
+                        data: text,
+                        timestamp: Date.now()
+                    }));
                     
                     processCSVData(text);
                 })
                 .catch(error => {
-                    console.error("Error loading data from GitHub:", error);
-                    document.getElementById('data-status').innerHTML = 
-                        '<i class="fas fa-exclamation-triangle"></i> Error loading data from GitHub: ' + error.message;
-                    document.getElementById('data-status').className = 'data-status error';
+                    console.error("Error loading fresh data:", error);
+                    // Try to use cached data even if expired
+                    if (cached) {
+                        const { data } = JSON.parse(cached);
+                        processCSVData(data);
+                        document.getElementById('data-status').innerHTML = 
+                            '<i class="fas fa-exclamation-triangle"></i> Using cached data (unable to fetch latest)';
+                    } else {
+                        document.getElementById('data-status').innerHTML = 
+                            `<i class="fas fa-exclamation-triangle"></i> Error: ${error.message}`;
+                        document.getElementById('data-status').className = 'data-status error';
+                    }
                 });
         }
 
@@ -1353,8 +1496,8 @@
                 throw new Error('No data rows found in CSV');
             }
             
-            const headers = rows[0].map(header => header.trim());
-            console.log("CSV Headers:", headers);
+            const headers = normalizeHeaders(rows[0]);
+            console.log("Normalized CSV Headers:", headers);
             
             // Create data objects
             csvData = rows.slice(1)
@@ -1371,7 +1514,7 @@
             
             if (csvData.length > 0) {
                 console.log("First record:", csvData[0]);
-                console.log("Available ward numbers:", csvData.map(row => row["WardNo"] || row["Ward No"] || row["Ward"] || "N/A"));
+                console.log("Available ward numbers:", csvData.map(row => row["wardno"] || "N/A"));
             }
             
             // Enable search and show success
@@ -1392,10 +1535,50 @@
             }
         }
 
+        // Better CSV Header Normalization
+        function normalizeHeaders(headers) {
+            return headers.map(header => {
+                const normalized = header.trim()
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]/g, '')
+                    .replace(/\s+/g, '');
+                
+                // Map common variations to standard names
+                const headerMap = {
+                    'wardno': 'wardno',
+                    'wardnumber': 'wardno',
+                    'ward': 'wardno',
+                    'wardname': 'wardname',
+                    'circleno': 'circleno',
+                    'circle': 'circleno',
+                    'zone': 'zone',
+                    'nameofthemla': 'mlaname',
+                    'mlaname': 'mlaname',
+                    'mla': 'mlaname',
+                    'nameofthecorporator': 'corporatorname',
+                    'corporatorname': 'corporatorname',
+                    'corporator': 'corporatorname',
+                    'mlacontactno': 'mlacontact',
+                    'mlacontact': 'mlacontact',
+                    'contactnumber1': 'contact1',
+                    'contactnumber2': 'contact2',
+                    'contact': 'contact1',
+                    'addressofcandidate': 'mlaaddress',
+                    'pincode': 'pincode',
+                    'mandalname': 'mandal',
+                    'districtname': 'district',
+                    'assemblyname': 'assembly',
+                    'parliament': 'parliament'
+                };
+                
+                return headerMap[normalized] || normalized;
+            });
+        }
+
         function getSampleWardNumbers() {
             if (csvData.length === 0) return null;
             const sampleWards = csvData.slice(0, 3).map(row => 
-                row["WardNo"] || row["Ward No"] || row["Ward"] || "N/A"
+                row["wardno"] || "N/A"
             ).filter(ward => ward !== "N/A");
             return sampleWards.length > 0 ? sampleWards.join(", ") : null;
         }
@@ -1435,15 +1618,45 @@
             return rows;
         }
 
+        // Enhanced Search Functionality
+        function enhancedSearch(wardInput) {
+            const input = wardInput.toLowerCase().trim();
+            
+            // Try exact match first
+            let result = csvData.find(row => {
+                const wardNo = (row.wardno || '').toString().toLowerCase();
+                return wardNo === input;
+            });
+            
+            // Try partial match
+            if (!result) {
+                result = csvData.find(row => {
+                    const wardNo = (row.wardno || '').toString().toLowerCase();
+                    return wardNo.includes(input) || input.includes(wardNo);
+                });
+            }
+            
+            // Try numeric match (remove leading zeros)
+            if (!result) {
+                const numericInput = input.replace(/^0+/, '');
+                result = csvData.find(row => {
+                    const wardNo = (row.wardno || '').toString().replace(/^0+/, '');
+                    return wardNo === numericInput;
+                });
+            }
+            
+            return result;
+        }
+
         function fetchWardData() {
             if (!dataLoaded) {
-                showError("Data is still loading. Please wait a moment.");
+                showError("Data is still loading. Please wait a moment.", true);
                 return;
             }
 
             let wardInput = document.getElementById("ward").value.trim();
             if (!wardInput) {
-                showError("Please enter a Ward Number.");
+                showError("Please enter a Ward Number.", true);
                 return;
             }
 
@@ -1453,26 +1666,8 @@
             document.getElementById('suggestions').style.display = 'none';
             document.getElementById('rateLimitMessage').style.display = 'none';
             
-            // Find matching ward - try different column names
-            let result = csvData.find(row => {
-                // Try all possible column names for ward number
-                const possibleWardNumbers = [
-                    row["WardNo"],
-                    row["Ward No"], 
-                    row["Ward"],
-                    row["Ward Number"],
-                    row["WardNumber"]
-                ];
-                
-                const input = wardInput.toLowerCase();
-                
-                for (let wardNo of possibleWardNumbers) {
-                    if (wardNo && wardNo.toString().toLowerCase() === input) {
-                        return true;
-                    }
-                }
-                return false;
-            });
+            // Use enhanced search
+            let result = enhancedSearch(wardInput);
 
             if (result) {
                 console.log("Found ward data:", result);
@@ -1480,16 +1675,21 @@
             } else {
                 // If exact match not found, show available wards
                 const availableWards = csvData.map(row => 
-                    row["WardNo"] || row["Ward No"] || row["Ward"] || "N/A"
+                    row["wardno"] || "N/A"
                 ).filter(ward => ward !== "N/A");
                 
-                showError("No data found for Ward: '" + wardInput + "'. Available wards: " + availableWards.join(", "));
+                showError("No data found for Ward: '" + wardInput + "'. Available wards: " + availableWards.join(", "), true);
                 document.getElementById('loading').style.display = 'none';
             }
         }
 
         function populateWardData(result) {
             console.log("Populating data for ward:", result);
+            
+            // Validate data
+            if (!validateWardData(result)) {
+                showError("Incomplete data for this ward. Some information may be missing.", true);
+            }
             
             // Show debug information
             showDebugInfo(result);
@@ -1505,26 +1705,26 @@
             }
 
             // Administrative Details
-            document.getElementById("wardNo").innerText = getValue(["WardNo", "Ward No", "Ward", "Ward Number"]);
-            document.getElementById("wardName").innerText = getValue(["WardName", "Ward Name"]);
-            document.getElementById("circleNo").innerText = getValue(["CircleNo", "Circle No", "Circle"]);
-            document.getElementById("zone").innerText = getValue(["Zone"]);
-            document.getElementById("pincode").innerText = getValue(["pincode", "Pincode"]);
-            document.getElementById("mandalName").innerText = getValue(["MandalName", "Mandal"]);
-            document.getElementById("districtName").innerText = getValue(["DistrictName", "District"]);
-            document.getElementById("assemblyName").innerText = getValue(["AssemblyName", "Assembly"]);
-            document.getElementById("parliament").innerText = getValue(["Parliament", "Parliamentary"]);
+            document.getElementById("wardNo").innerText = getValue(["wardno"]);
+            document.getElementById("wardName").innerText = getValue(["wardname"]);
+            document.getElementById("circleNo").innerText = getValue(["circleno"]);
+            document.getElementById("zone").innerText = getValue(["zone"]);
+            document.getElementById("pincode").innerText = getValue(["pincode"]);
+            document.getElementById("mandalName").innerText = getValue(["mandal"]);
+            document.getElementById("districtName").innerText = getValue(["district"]);
+            document.getElementById("assemblyName").innerText = getValue(["assembly"]);
+            document.getElementById("parliament").innerText = getValue(["parliament"]);
 
             // MLA Details
-            document.getElementById("NameoftheMLA").innerText = getValue(["NameoftheMLA", "MLA Name", "MLA"]);
-            document.getElementById("AddressofCandidate").innerText = getValue(["AddressofCandidate", "MLA Address", "Address"]);
+            document.getElementById("NameoftheMLA").innerText = getValue(["mlaname"]);
+            document.getElementById("AddressofCandidate").innerText = getValue(["mlaaddress"]);
 
             // Corporator Details
-            document.getElementById("NameoftheCorporator").innerText = getValue(["NameoftheCorporator", "Corporator Name", "Corporator"]);
+            document.getElementById("NameoftheCorporator").innerText = getValue(["corporatorname"]);
 
             // Contact Numbers - SHOW FULL NUMBERS DIRECTLY
             setupMLAContact(
-                getValue(["MLAContactNo", "MLA Contact"])
+                getValue(["mlacontact"])
             );
             
             // Corporator Contacts - SHOW FULL NUMBERS DIRECTLY
@@ -1536,6 +1736,18 @@
             
             // Scroll to results
             document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Data Validation
+        function validateWardData(data) {
+            const requiredFields = ['wardno', 'wardname'];
+            const missingFields = requiredFields.filter(field => !data[field] || data[field] === 'N/A');
+            
+            if (missingFields.length > 0) {
+                console.warn('Missing required fields:', missingFields);
+                return false;
+            }
+            return true;
         }
 
         function showDebugInfo(result) {
@@ -1580,35 +1792,19 @@
             
             // Look specifically for CORPORATOR contact fields
             const corporatorContactFields = Object.keys(result).filter(key => 
-                key.toLowerCase().includes('corporator') && 
-                (key.toLowerCase().includes('contact') || key.toLowerCase().includes('number') || key.toLowerCase().includes('phone'))
+                (key.includes('contact1') || key.includes('contact2')) && 
+                !key.includes('mla')
             );
             
             console.log("Corporator contact fields:", corporatorContactFields);
             
-            // Also check for generic contact fields that might be for corporator
-            const genericContactFields = ['Contact Number1', 'Contact Number2', 'ContactNumber', 'Contact'];
-            
             let contactCount = 0;
             
-            // First try corporator-specific fields
+            // Try corporator-specific fields
             for (const field of corporatorContactFields) {
                 if (result[field] && result[field].trim() !== "" && result[field] !== "N/A") {
                     createContactLink(result[field], contactsContainer, `Corporator (${field})`);
                     contactCount++;
-                }
-            }
-            
-            // If no corporator-specific fields found, try generic contact fields
-            if (contactCount === 0) {
-                for (const field of genericContactFields) {
-                    // Skip MLA contact fields
-                    if (field.toLowerCase().includes('mla')) continue;
-                    
-                    if (result[field] && result[field].trim() !== "" && result[field] !== "N/A") {
-                        createContactLink(result[field], contactsContainer, `Corporator (${field})`);
-                        contactCount++;
-                    }
                 }
             }
             
@@ -1665,7 +1861,7 @@
             }
             
             const suggestions = csvData.filter(row => {
-                const wardNo = (row["WardNo"] || row["Ward No"] || row["Ward"] || "").toString().toLowerCase();
+                const wardNo = (row["wardno"] || "").toString().toLowerCase();
                 return wardNo.includes(input);
             }).slice(0, 5);
 
@@ -1674,7 +1870,7 @@
             
             if (suggestions.length > 0) {
                 suggestions.forEach(row => {
-                    const wardNo = row["WardNo"] || row["Ward No"] || row["Ward"] || "N/A";
+                    const wardNo = row["wardno"] || "N/A";
                     
                     const div = document.createElement('div');
                     div.className = 'suggestion-item';
@@ -1692,10 +1888,21 @@
             }
         }
 
-        function showError(message) {
-            document.getElementById('error-text').innerText = message;
-            document.getElementById('error-message').style.display = 'block';
+        // Improved Error Handling
+        function showError(message, isUserFriendly = true) {
+            const errorElement = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            
+            if (isUserFriendly) {
+                errorText.innerText = message;
+            } else {
+                errorText.innerText = "Unable to load data. Please check your connection and try again.";
+                console.error("Technical error:", message);
+            }
+            
+            errorElement.style.display = 'block';
             document.getElementById('results-container').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
         }
 
         function scrollToSection(sectionId) {
@@ -1710,6 +1917,61 @@
             document.getElementById(sectionId).classList.add('active');
             
             document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Report Error Functionality
+        function openErrorReport() {
+            const currentWard = document.getElementById('ward').value;
+            if (!currentWard) {
+                alert('Please search for a ward first before reporting an error.');
+                return;
+            }
+            
+            document.getElementById('reportWardNo').value = currentWard;
+            document.getElementById('reportErrorModal').style.display = 'flex';
+        }
+
+        function closeErrorReport() {
+            document.getElementById('reportErrorModal').style.display = 'none';
+            // Reset form
+            document.getElementById('errorType').value = '';
+            document.getElementById('correctInfo').value = '';
+            document.getElementById('reporterEmail').value = '';
+        }
+
+        function submitErrorReport() {
+            const wardNo = document.getElementById('reportWardNo').value;
+            const errorType = document.getElementById('errorType').value;
+            const correctInfo = document.getElementById('correctInfo').value;
+            const reporterEmail = document.getElementById('reporterEmail').value;
+
+            if (!errorType || !correctInfo.trim()) {
+                alert('Please select error type and provide correct information.');
+                return;
+            }
+
+            // Store error report in analytics
+            analyticsData.errorReports.push({
+                timestamp: new Date().toISOString(),
+                wardNo: wardNo,
+                errorType: errorType,
+                correctInfo: correctInfo,
+                reporterEmail: reporterEmail,
+                ip: userIP
+            });
+            
+            saveAnalytics();
+            
+            // In a real implementation, you would send this to a server
+            console.log('Error report submitted:', {
+                wardNo,
+                errorType,
+                correctInfo,
+                reporterEmail
+            });
+
+            alert('Thank you for your report! We will review the information and make corrections if needed.');
+            closeErrorReport();
         }
 
         // Tab functionality
@@ -1749,7 +2011,7 @@
             
             loadAnalytics();
             trackVisitor();
-            loadData();
+            loadDataWithCache(); // Use cached version instead
             
             // Show terms modal if not accepted
             if (!termsAccepted) {
