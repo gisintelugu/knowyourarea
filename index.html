@@ -1940,39 +1940,55 @@
         }
 
         function submitErrorReport() {
-            const wardNo = document.getElementById('reportWardNo').value;
-            const errorType = document.getElementById('errorType').value;
-            const correctInfo = document.getElementById('correctInfo').value;
-            const reporterEmail = document.getElementById('reporterEmail').value;
+    const wardNo = document.getElementById('reportWardNo').value;
+    const errorType = document.getElementById('errorType').value;
+    const correctInfo = document.getElementById('correctInfo').value;
+    const reporterEmail = document.getElementById('reporterEmail').value;
 
-            if (!errorType || !correctInfo.trim()) {
-                alert('Please select error type and provide correct information.');
-                return;
-            }
+    if (!errorType || !correctInfo.trim()) {
+        alert('Please select error type and provide correct information.');
+        return;
+    }
 
-            // Store error report in analytics
-            analyticsData.errorReports.push({
-                timestamp: new Date().toISOString(),
-                wardNo: wardNo,
-                errorType: errorType,
-                correctInfo: correctInfo,
-                reporterEmail: reporterEmail,
-                ip: userIP
-            });
-            
-            saveAnalytics();
-            
-            // In a real implementation, you would send this to a server
-            console.log('Error report submitted:', {
-                wardNo,
-                errorType,
-                correctInfo,
-                reporterEmail
-            });
+    // Create email content
+    const subject = `Error Report for Ward ${wardNo} - Know Your Area`;
+    const body = `
+Error Report Details:
 
-            alert('Thank you for your report! We will review the information and make corrections if needed.');
-            closeErrorReport();
-        }
+Ward Number: ${wardNo}
+Type of Error: ${errorType}
+Correct Information: 
+${correctInfo}
+
+User Contact: ${reporterEmail || 'Not provided'}
+Reported From IP: ${userIP}
+Timestamp: ${new Date().toLocaleString()}
+
+---
+This report was submitted through Know Your Area website.
+    `;
+
+    // Open user's email client
+    const mailtoLink = `mailto:gisintelugu@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // Store locally for analytics
+    analyticsData.errorReports.push({
+        timestamp: new Date().toISOString(),
+        wardNo: wardNo,
+        errorType: errorType,
+        correctInfo: correctInfo,
+        reporterEmail: reporterEmail,
+        ip: userIP
+    });
+    
+    saveAnalytics();
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    alert('Thank you! Please send the email that opens to submit your report.');
+    closeErrorReport();
+}
 
         // Tab functionality
         document.querySelectorAll('.tab').forEach(tab => {
@@ -2023,3 +2039,4 @@
     </script>
 </body>
 </html>
+
