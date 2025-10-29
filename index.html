@@ -468,27 +468,6 @@
             overflow-y: auto;
         }
 
-        /* Report Error Button */
-        .report-error-btn {
-            background: var(--warning);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin: 10px 0;
-            transition: all 0.3s;
-        }
-
-        .report-error-btn:hover {
-            background: #e67e22;
-            transform: translateY(-2px);
-        }
-
         /* Public Interest Banner */
         .public-interest-banner {
             background: linear-gradient(135deg, #e3f2fd, #bbdefb);
@@ -824,47 +803,6 @@
         </div>
     </div>
 
-    <!-- Report Error Modal -->
-    <div class="modal" id="reportErrorModal">
-        <div class="modal-content">
-            <h3><i class="fas fa-exclamation-triangle"></i> Report Incorrect Information</h3>
-            <div class="terms-content">
-                <p>Please help us maintain accurate information by reporting any errors you find:</p>
-                
-                <div style="margin: 15px 0;">
-                    <label><strong>Ward Number:</strong></label>
-                    <input type="text" id="reportWardNo" class="search-container input" style="width: 100%; padding: 8px; margin: 5px 0;" readonly>
-                </div>
-                
-                <div style="margin: 15px 0;">
-                    <label><strong>What information is incorrect?</strong></label>
-                    <select id="errorType" style="width: 100%; padding: 8px; margin: 5px 0;">
-                        <option value="">Select the type of error</option>
-                        <option value="contact">Contact Number</option>
-                        <option value="name">Name of Representative</option>
-                        <option value="address">Address</option>
-                        <option value="ward">Ward Information</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div style="margin: 15px 0;">
-                    <label><strong>Correct Information:</strong></label>
-                    <textarea id="correctInfo" style="width: 100%; padding: 8px; margin: 5px 0; height: 80px;" placeholder="Please provide the correct information..."></textarea>
-                </div>
-                
-                <div style="margin: 15px 0;">
-                    <label><strong>Your Email (optional):</strong></label>
-                    <input type="email" id="reporterEmail" style="width: 100%; padding: 8px; margin: 5px 0;" placeholder="Enter your email for updates">
-                </div>
-            </div>
-            <div class="modal-buttons">
-                <button class="modal-btn primary" onclick="submitErrorReport()">Submit Report</button>
-                <button class="modal-btn secondary" onclick="closeErrorReport()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
     <header>
         <div class="container">
             <div class="header-content">
@@ -932,10 +870,6 @@
             </div>
             
             <div class="tab-content active" id="administrative">
-                <button class="report-error-btn" onclick="openErrorReport()">
-                    <i class="fas fa-exclamation-circle"></i> Report Incorrect Information
-                </button>
-                
                 <div class="info-grid">
                     <div class="info-card">
                         <h3><i class="fas fa-landmark"></i> Basic Information</h3>
@@ -960,10 +894,6 @@
             </div>
             
             <div class="tab-content" id="representatives">
-                <button class="report-error-btn" onclick="openErrorReport()">
-                    <i class="fas fa-exclamation-circle"></i> Report Incorrect Information
-                </button>
-
                 <div class="security-warning">
                     <i class="fas fa-shield-alt"></i>
                     <strong>Security Notice:</strong> Contact information is provided for official purposes only. 
@@ -1057,10 +987,6 @@
             </div>
             
             <div class="tab-content" id="utilities">
-                <button class="report-error-btn" onclick="openErrorReport()">
-                    <i class="fas fa-exclamation-circle"></i> Report Incorrect Information
-                </button>
-
                 <div class="info-grid">
                     <div class="info-card">
                         <h3><i class="fas fa-tint"></i> Water Supply & Sewerage</h3>
@@ -1192,8 +1118,7 @@
             total: 0,
             contactClicks: 0,
             ipAddresses: [],
-            securityEvents: [],
-            errorReports: []
+            securityEvents: []
         };
 
         // Load analytics from localStorage
@@ -1919,77 +1844,6 @@
             document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Report Error Functionality
-        function openErrorReport() {
-            const currentWard = document.getElementById('ward').value;
-            if (!currentWard) {
-                alert('Please search for a ward first before reporting an error.');
-                return;
-            }
-            
-            document.getElementById('reportWardNo').value = currentWard;
-            document.getElementById('reportErrorModal').style.display = 'flex';
-        }
-
-        function closeErrorReport() {
-            document.getElementById('reportErrorModal').style.display = 'none';
-            // Reset form
-            document.getElementById('errorType').value = '';
-            document.getElementById('correctInfo').value = '';
-            document.getElementById('reporterEmail').value = '';
-        }
-
-        function submitErrorReport() {
-    const wardNo = document.getElementById('reportWardNo').value;
-    const errorType = document.getElementById('errorType').value;
-    const correctInfo = document.getElementById('correctInfo').value;
-    const reporterEmail = document.getElementById('reporterEmail').value;
-
-    if (!errorType || !correctInfo.trim()) {
-        alert('Please select error type and provide correct information.');
-        return;
-    }
-
-    // Create email content
-    const subject = `Error Report for Ward ${wardNo} - Know Your Area`;
-    const body = `
-Error Report Details:
-
-Ward Number: ${wardNo}
-Type of Error: ${errorType}
-Correct Information: 
-${correctInfo}
-
-User Contact: ${reporterEmail || 'Not provided'}
-Reported From IP: ${userIP}
-Timestamp: ${new Date().toLocaleString()}
-
----
-This report was submitted through Know Your Area website.
-    `;
-
-    // Open user's email client
-    const mailtoLink = `mailto:gisintelugu@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-    // Store locally for analytics
-    analyticsData.errorReports.push({
-        timestamp: new Date().toISOString(),
-        wardNo: wardNo,
-        errorType: errorType,
-        correctInfo: correctInfo,
-        reporterEmail: reporterEmail,
-        ip: userIP
-    });
-    
-    saveAnalytics();
-    
-    // Open email client
-    window.location.href = mailtoLink;
-    
-    alert('Thank you! Please send the email that opens to submit your report.');
-    closeErrorReport();
-}
-
         // Tab functionality
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
@@ -2039,4 +1893,3 @@ This report was submitted through Know Your Area website.
     </script>
 </body>
 </html>
-
