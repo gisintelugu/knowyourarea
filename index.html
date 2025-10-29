@@ -6,7 +6,6 @@
     <title>Know Your Area</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Your existing CSS remains exactly the same */
         :root {
             --primary: #2c7a5a;
             --primary-dark: #1e5e44;
@@ -77,6 +76,22 @@
             opacity: 0.9;
         }
         
+        .quick-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .visitor-counter {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
         .search-section {
             background: white;
             padding: 25px;
@@ -94,7 +109,7 @@
         
         .search-container {
             display: flex;
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             gap: 10px;
         }
@@ -118,7 +133,7 @@
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 12px 20px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 1rem;
@@ -132,6 +147,14 @@
         .search-container button:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
+        }
+        
+        .search-container button.reset {
+            background-color: var(--gray);
+        }
+        
+        .search-container button.reset:hover {
+            background-color: var(--dark);
         }
         
         .results-container {
@@ -237,6 +260,20 @@
         
         .contact-link:hover {
             color: var(--primary);
+        }
+
+        .security-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .security-warning i {
+            color: var(--warning);
+            margin-right: 10px;
         }
         
         .emergency-grid {
@@ -411,6 +448,93 @@
             overflow-y: auto;
         }
 
+        /* Analytics Dashboard Styles */
+        .analytics-dashboard {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .analytics-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .analytics-card.mobile {
+            border-left: 4px solid var(--primary);
+        }
+
+        .analytics-card.desktop {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .analytics-card.tablet {
+            border-left: 4px solid var(--success);
+        }
+
+        .analytics-card.total {
+            border-left: 4px solid var(--warning);
+        }
+
+        .analytics-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .analytics-count {
+            font-weight: bold;
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+
+        .analytics-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .admin-actions {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .admin-btn {
+            padding: 12px 25px;
+            background: var(--gray);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-btn:hover {
+            background: var(--dark);
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -435,6 +559,15 @@
                 min-width: 120px;
                 text-align: center;
             }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-info {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -451,6 +584,10 @@
                 </div>
                 <div class="quick-info">
                     <p><i class="fas fa-info-circle"></i> Find your ward representatives and essential services</p>
+                    <div class="visitor-counter">
+                        <i class="fas fa-users"></i> 
+                        <span id="simpleVisitorCount">0</span> Visitors
+                    </div>
                 </div>
             </div>
         </div>
@@ -466,6 +603,9 @@
                 <input type="text" id="ward" placeholder="Enter Ward Number (e.g., 1, 2, 3...)" autocomplete="off" disabled>
                 <button onclick="fetchWardData()" id="search-btn" disabled>
                     <i class="fas fa-search"></i> Get Details
+                </button>
+                <button onclick="resetSearch()" class="reset" id="reset-btn" disabled>
+                    <i class="fas fa-redo"></i> Reset
                 </button>
             </div>
             <div class="suggestions" id="suggestions"></div>
@@ -517,12 +657,19 @@
             </div>
             
             <div class="tab-content" id="representatives">
+                <div class="security-warning">
+                    <i class="fas fa-shield-alt"></i>
+                    <strong>Security Notice:</strong> Contact information is provided for official purposes only. 
+                    Misuse of this information for harassment, spam, or illegal activities is strictly prohibited 
+                    and may result in legal action under Indian IT Act.
+                </div>
+                
                 <div class="info-grid">
                     <div class="info-card">
                         <h3><i class="fas fa-user-tie"></i> MLA Details</h3>
                         <p><strong>Name:</strong> <span id="NameoftheMLA">N/A</span></p>
                         <p><strong>Address:</strong> <span id="AddressofCandidate">N/A</span></p>
-                        <a href="#" id="MLAContactNo" class="contact-link" target="_blank">
+                        <a href="#" id="MLAContactNo" class="contact-link" target="_blank" onclick="trackContactClick('MLA')">
                             <i class="fab fa-whatsapp"></i> <span id="MLAContactText">N/A</span>
                         </a>
                     </div>
@@ -631,6 +778,38 @@
                 </div>
             </div>
         </section>
+
+        <!-- Analytics Dashboard - Always Visible -->
+        <section class="analytics-dashboard" id="analyticsDashboard">
+            <h2><i class="fas fa-chart-bar"></i> Visitor Statistics</h2>
+            <p style="color: var(--gray); margin-bottom: 20px;">Real-time visitor analytics for Know Your Area</p>
+            
+            <div class="analytics-grid">
+                <div class="analytics-card mobile">
+                    <div class="analytics-icon">📱</div>
+                    <div class="analytics-count" id="mobileVisitors">0</div>
+                    <div class="analytics-label">Mobile Visitors</div>
+                </div>
+                
+                <div class="analytics-card desktop">
+                    <div class="analytics-icon">💻</div>
+                    <div class="analytics-count" id="desktopVisitors">0</div>
+                    <div class="analytics-label">Desktop Visitors</div>
+                </div>
+                
+                <div class="analytics-card tablet">
+                    <div class="analytics-icon">📊</div>
+                    <div class="analytics-count" id="tabletVisitors">0</div>
+                    <div class="analytics-label">Tablet Visitors</div>
+                </div>
+                
+                <div class="analytics-card total">
+                    <div class="analytics-icon">👥</div>
+                    <div class="analytics-count" id="totalVisitors">0</div>
+                    <div class="analytics-label">Total Visitors</div>
+                </div>
+            </div>
+        </section>
         
         <div class="quick-actions">
             <div class="action-btn" onclick="scrollToSection('emergency')">
@@ -651,6 +830,10 @@
             <p><strong>Disclaimer:</strong> The information regarding the Corporator's and MLA's is sourced from the GHMC website.
             For Electricity: The information is sourced from https://www.tgsouthernpower.org/
             For Police Station Details: The information is sourced from https://www.cyberabadpolice.gov.in</p>
+            <p style="margin-top: 10px; color: var(--danger);">
+                <strong>Security Notice:</strong> Contact information is provided for official civic purposes only. 
+                Misuse for harassment, spam, or illegal activities is prohibited and may lead to legal action under Indian IT Act, 2000.
+            </p>
         </div>
     </div>
 
@@ -660,6 +843,108 @@
 
         // GitHub Raw CSV URL - No CORS issues!
         const GITHUB_CSV_URL = "https://raw.githubusercontent.com/gisintelugu/knowyourarea/refs/heads/main/knowyourarea.csv";
+
+        // Visitor Analytics System
+        let analyticsData = {
+            mobile: 0,
+            desktop: 0,
+            tablet: 0,
+            total: 0,
+            contactClicks: 0
+        };
+
+        // Load analytics from localStorage
+        function loadAnalytics() {
+            const saved = localStorage.getItem('knowYourAreaAnalytics');
+            if (saved) {
+                analyticsData = JSON.parse(saved);
+            }
+            updateAnalyticsDisplay();
+        }
+
+        // Save analytics to localStorage
+        function saveAnalytics() {
+            localStorage.setItem('knowYourAreaAnalytics', JSON.stringify(analyticsData));
+        }
+
+        // Detect device type and track visitor
+        function trackVisitor() {
+            const deviceType = getDeviceType();
+            analyticsData[deviceType]++;
+            analyticsData.total++;
+            
+            saveAnalytics();
+            updateAnalyticsDisplay();
+            
+            console.log('Visitor tracked - Device:', deviceType, 'Total:', analyticsData.total);
+        }
+
+        // Track contact clicks for security monitoring
+        function trackContactClick(type) {
+            analyticsData.contactClicks++;
+            saveAnalytics();
+            console.log(`Contact click tracked - Type: ${type}, Total Clicks: ${analyticsData.contactClicks}`);
+            
+            // Show security reminder on first contact click
+            if (analyticsData.contactClicks === 1) {
+                setTimeout(() => {
+                    alert('🔒 Remember: Contact information is for official purposes only. Misuse may lead to legal consequences.');
+                }, 1000);
+            }
+        }
+
+        // Enhanced device detection
+        function getDeviceType() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const screenWidth = window.screen.width;
+            
+            // Mobile detection
+            if (/android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(userAgent)) {
+                if (screenWidth < 768) {
+                    return 'mobile';
+                }
+                return 'tablet';
+            }
+            
+            // Tablet detection
+            if (/ipad|tablet|playbook|silk/i.test(userAgent) || (screenWidth <= 1024 && screenWidth >= 768)) {
+                return 'tablet';
+            }
+            
+            // Desktop
+            return 'desktop';
+        }
+
+        // Update analytics display
+        function updateAnalyticsDisplay() {
+            document.getElementById('mobileVisitors').textContent = analyticsData.mobile;
+            document.getElementById('desktopVisitors').textContent = analyticsData.desktop;
+            document.getElementById('tabletVisitors').textContent = analyticsData.tablet;
+            document.getElementById('totalVisitors').textContent = analyticsData.total;
+            document.getElementById('simpleVisitorCount').textContent = analyticsData.total;
+        }
+
+        // Reset search function
+        function resetSearch() {
+            document.getElementById('ward').value = '';
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('suggestions').style.display = 'none';
+            
+            // Reset all fields to N/A
+            document.querySelectorAll('[id]').forEach(element => {
+                if (element.id !== 'ward' && element.id !== 'simpleVisitorCount') {
+                    if (element.tagName === 'SPAN') {
+                        element.textContent = 'N/A';
+                    }
+                }
+            });
+            
+            // Clear corporator contacts
+            document.getElementById('corporatorContacts').innerHTML = '';
+            
+            console.log('Search reset successfully');
+        }
 
         // Load data from GitHub
         function loadData() {
@@ -731,6 +1016,7 @@
             
             document.getElementById('ward').disabled = false;
             document.getElementById('search-btn').disabled = false;
+            document.getElementById('reset-btn').disabled = false;
             
             // Show sample ward numbers for user guidance
             const sampleWards = getSampleWardNumbers();
@@ -957,6 +1243,8 @@
             contactLink.className = 'contact-link';
             contactLink.target = '_blank';
             contactLink.innerHTML = `<i class="fab fa-whatsapp"></i> <span>${contact}</span>`;
+            contactLink.onclick = function() { trackContactClick('Corporator'); };
+            
             if (fieldName) {
                 console.log(`Creating contact link from ${fieldName}: ${contact}`);
             }
@@ -988,6 +1276,7 @@
             if (contact && contact !== "N/A" && contact.trim() !== "") {
                 text.innerText = contact;
                 link.href = `https://wa.me/${formatContactNumber(contact)}`;
+                link.onclick = function() { trackContactClick('MLA'); return true; };
                 console.log(`WhatsApp link created: https://wa.me/${formatContactNumber(contact)}`);
             } else {
                 text.innerText = "N/A";
@@ -1084,8 +1373,10 @@
             }
         });
 
-        // Initialize
+        // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            loadAnalytics();
+            trackVisitor();
             loadData();
         });
     </script>
